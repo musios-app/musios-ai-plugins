@@ -1,0 +1,26 @@
+{
+  "name": "songwriting-coach",
+  "version": "0.2.1",
+  "description": "Songwriting assistant: idea to finished draft",
+  "author": {
+    "name": "Andrew Hunt (musios)",
+    "url": "https://musios.app/"
+  },
+  "homepage": "https://musios.app/projects/songwriting-coach/",
+  "license": "SEE LICENSE IN skills/songwriting-coach/LICENSE.txt",
+  "keywords": [
+    "songwriting",
+    "lyrics"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Songwriting Coach",
+    "shortDescription": "Songwriting assistant: idea to finished draft",
+    "category": "Productivity",
+    "developerName": "musios",
+    "websiteURL": "https://musios.app/projects/songwriting-coach/",
+    "defaultPrompt": [
+      "I want to write a song"
+    ]
+  }
+}

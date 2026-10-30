@@ -1,0 +1,23 @@
+# Song status
+
+When the writer asks for the song's status, give a quick summary in the chat and a status board, built from the checks run so far in this conversation. Show it only when asked — never in the greeting, and don't replace any report with it.
+
+Views — the writer can name any of them; all three use the same page, opened differently:
+- **Status** (default — "show song status", "where are we", "traffic lights"): assessments with at least one check run are expanded to show their checks; the rest are collapsed.
+- **Summary status** ("status summary", "overview", "summary status"): every assessment collapsed to its one summary row.
+- **Detailed status** ("detailed status", "full status"): every assessment expanded, including checks not run.
+
+How to build it — the first time status is asked, add lines for everything run so far; once the log exists, add lines for each new check or edit as it happens (one short command, no redraw needed until asked). The board keeps a log, `status.jsonl`, one flat JSON line per fact, read top to bottom (later lines win). Add to it as you go; never rewrite it.
+1. Add lines with the script, which checks each one and refuses a mistake with a message: `python3 <skill-folder>/scripts/status_board.py status.jsonl --add '<json line>' --add '<json line>'` (`<skill-folder>` is the folder containing SKILL.md; add `--out <folder>` to choose where the HTML page goes (the same folder rules as the rhyme map; for ChatGPT the current folder); add `--view summary` or `--view detailed` for those views). With no `--add` it only redraws the board. The lines:
+   - `{"event":"song","title":"…"}`
+   - `{"event":"section","name":"Verse 1","abbrev":"V1"}` (add `"instrumental":true` for a section with no lyric). `name` is the full title from the lyric and must be unique (a repeated chorus is "Chorus 2"); `abbrev` is the short column heading you choose (V1, C1, PC, B, SO, O). Declare every section the first time the board is used.
+   - `{"event":"section-order","names":["Verse 1","Chorus",…]}` once the sections are declared, and again if they are moved.
+   - `{"event":"section-rename","name":"Verse 1","new_name":"Verse One","abbrev":"V1"}` (keeps results; `abbrev` only if it changes), `{"event":"section-replace","name":"Verse 2"}` (new text: its results are cleared), `{"event":"section-delete","name":"Verse 1"}`.
+   - After each check you run: `{"event":"run","test":"Cliche scan"}`, then one `result` line per finding: `{"event":"result","test":"Cliche scan","section":"Verse 1","status":"concern","note":"one short line"}`. A section with no result line counts as clean. For a whole-song check use `"section":"whole"`.
+   - Status: `strong` (clean or positive), `observation`, `concern`, `issue`. Check names are those in the Tool List.
+   - When the writer changes a section: `{"event":"edit","section":"Verse 1"}`. It marks that section's results, and every whole-song result, as run before the latest edits.
+2. Open the board for the writer: after the script has written it, open `html_file` in the app's browser with `mcp__codex_app__open_in_codex`, `target.type` `"browser"` and `target.url` the absolute file URL (`file:///…`). A request for status authorizes this; don't ask first. Open it before sending the status summary, the first time status is shown in the conversation; later runs only update the file, and the open tab refreshes itself (it checks every second and reloads only when the board has changed), so say only that the board has been updated. A link alone doesn't complete this step. If the board can't be opened (the tool is unavailable or fails), give a bold, clickable link to `html_file` on its own line and say briefly that it couldn't be opened automatically. Do not also show the board in the chat unless the writer asks, or the page could not be made; then show the `markdown` board from the output exactly as it comes (one table: a header row, a row per assessment with the worst result in each column, and that assessment's check rows under it).
+3. Show the `chat_lines`, one per assessment, positives first — e.g. **Core Assessment** 🟢 8 · 🔵 1 · 🟡 4 · 🔴 1 — 4 of 6 run.
+4. End with one line naming the reddest area and offering the obvious next check — an offer, not a queue.
+
+If the script can't run, give the chat lines only, counting the results yourself.

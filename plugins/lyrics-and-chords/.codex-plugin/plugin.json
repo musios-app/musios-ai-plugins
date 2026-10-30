@@ -1,0 +1,27 @@
+{
+  "name": "lyrics-and-chords",
+  "version": "0.1.5",
+  "description": "Loads song lyric and chord files and checks that no word or chord was lost.",
+  "author": {
+    "name": "Andrew Hunt (musios)",
+    "url": "https://musios.app/"
+  },
+  "homepage": "https://musios.app/projects/lyrics-and-chords/",
+  "license": "GPL-2.0-only",
+  "keywords": [
+    "lyrics",
+    "chords",
+    "songwriting"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Lyrics & Chords",
+    "shortDescription": "Load song lyrics and chord sheets",
+    "category": "Productivity",
+    "developerName": "musios",
+    "websiteURL": "https://musios.app/projects/lyrics-and-chords/",
+    "defaultPrompt": [
+      "Use the lyrics-and-chords skill to load my lyrics"
+    ]
+  }
+}

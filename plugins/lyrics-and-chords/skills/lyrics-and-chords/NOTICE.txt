@@ -1,0 +1,14 @@
+Lyrics & Chords skill
+Version 0.1.5
+Licence: GPL-2.0-only (see LICENSE).
+
+This skill bundles:
+
+  ChordSheetJS 18.0.0, by Martijn Versluis
+  Licence: GPL-2.0-only
+  Source: https://github.com/martijnversluis/ChordSheetJS
+  It is included in scripts/lib/chordsheetjs.mjs, compressed by esbuild from that source,
+  with nothing else added. It has no other dependencies.
+
+The rest of the skill (SKILL.md and the other files in scripts/) is the source of this
+package, in readable form. The development repository holds the tests and design notes.

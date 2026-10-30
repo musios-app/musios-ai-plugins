@@ -1,0 +1,32 @@
+{
+  "name": "musios-ai",
+  "interface": {
+    "displayName": "musios AI"
+  },
+  "plugins": [
+    {
+      "name": "songwriting-coach",
+      "source": {
+        "source": "local",
+        "path": "./plugins/songwriting-coach"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "lyrics-and-chords",
+      "source": {
+        "source": "local",
+        "path": "./plugins/lyrics-and-chords"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

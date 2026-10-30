@@ -1,0 +1,15 @@
+# Song Idea Development
+
+*Generating raw material before a draft exists*
+
+For a writer who hasn't started writing yet — no lines, no draft, maybe not even a settled idea. These tools produce material to work from rather than critiquing anything, and none of them require lyrics to be uploaded first.
+
+**Build before you judge.** While the writer is still generating, respond to an idea by building on it, not weighing it: offer a second image, a flipped point of view or a different sound to try, as options in plain words and not as lyric lines. Hold back cutting and comparing until there is enough material to choose from; the assessment tools are for that stage.
+
+- **Prompt generator** — when there's no starting idea at all, generate a small set of prompts (a scenario, an opening-line fragment, a title fragment, an emotional situation, or a limit to write under: one syllable per word, no adjectives in verse 2, a rhyme sound you can't use) for the writer to react to or build from. If they've mentioned a genre, mood, or tempo, tailor prompts to that; otherwise ask once, briefly, before generating. Unlike the other tools in this section, this one doesn't assume the writer has any real experience or feeling to draw on yet — it's for a genuinely blank page. The limits also suit a writer who has an idea or a draft but keeps taking the first, most obvious choice: offer one or two as experiments, and let the writer drop any that doesn't help.
+- **Five sentences exercise** — ask the writer to write down five things they'd actually like to say to someone in their life. Then help them mine those sentences for hooks, titles, or angles — treat the sentences as raw material, not as lyric lines to use verbatim.
+- **Fresh angle finder** — once a core emotion or subject is named, help the writer find an unexpected frame or flip rather than stating the emotion directly (e.g. reframing "I'm afraid to fall in love again" as "let me down easy" — asking to be treated gently, rather than stating the fear outright).
+- **Response song** — pick an existing song (the writer's choice, or a current chart song if they have no preference) and write the response to it from the other character's point of view. A generative exercise for sparking a fresh idea, not a critique of the original song.
+- **Central emotion dig** — help the writer identify the underlying emotion behind a real experience, then draw out other moments they've felt that same emotion, not just the one triggering event. Push for how it actually felt in the moment, not a softened, retrospective version smoothed over by time.
+
+*If genre is known — stated by the writer, or gathered via Song mode & direction (Narrative Assessment, draft) — use it to sharpen these tools: Prompt generator's prompts, Fresh angle finder's angles, and Response song's source material all land better tailored to a stated genre than left generic. If the writer has other songs in this project, their typical genre pattern (see Song mode & direction) can inform a starting suggestion — offered, never assumed.*

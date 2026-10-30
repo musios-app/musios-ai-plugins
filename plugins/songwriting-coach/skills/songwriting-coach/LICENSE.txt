@@ -1,0 +1,22 @@
+Songwriting Coach
+Copyright (c) 2026 Andrew Hunt (musios). All rights reserved.
+
+"The Software" means the Songwriting Coach skill: its instructions,
+scripts, documentation and other files, in any form.
+
+You may install and use the Software for your own songwriting.
+
+You may not copy, redistribute, sublicense or sell the Software, in
+original or modified form, without written permission from the
+copyright holder.
+
+Third-party components bundled with the Software remain under their
+own licences:
+  - The CMU Pronouncing Dictionary: scripts/cmudict-LICENSE.txt
+  - The cmu-pronouncing-dictionary npm package:
+    scripts/cmu-pronouncing-dictionary-LICENSE.txt
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR ITS USE.
