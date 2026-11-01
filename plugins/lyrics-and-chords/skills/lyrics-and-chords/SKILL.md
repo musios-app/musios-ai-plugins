@@ -4,12 +4,16 @@ description: Loads song lyric and chord files (plain lyrics, chords above words,
 license: GPL-2.0-only
 compatibility: Requires Node.js 18 or later. Makes no network requests.
 metadata:
-  version: "0.1.5"
+  version: "0.1.6"
 ---
 
-# Lyrics & Chords (provisional)
+# Lyrics & Chords
 
-Version 0.1, provisional. The scripts under "What works now" are built; capabilities marked planned are not.
+*(v0.1.6)* The scripts under "What works now" are built; capabilities marked planned are not.
+
+## Opening
+
+If the writer has not given a song yet, say: "The Lyrics & Chords skill (v0.1.6) is loaded, but I don't have a song to load yet." Then wait.
 
 ## Which Node to use
 

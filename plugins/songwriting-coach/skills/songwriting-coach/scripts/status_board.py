@@ -15,6 +15,7 @@ Lines:
   {"event":"section-rename","name":"Verse 1","new_name":"Verse One","abbrev":"V1"}
   {"event":"section-replace","name":"Verse 2"}                (new text: results cleared)
   {"event":"section-delete","name":"Verse 1"}
+  {"event":"unsupported","test":"Song dynamics graph"}       (this platform can't run it: shown "Not yet supported")
   {"event":"run","test":"Cliche scan"}                        (clears that check's results)
   {"event":"result","test":"Cliche scan","section":"Verse 1","status":"concern","note":"..."}
   {"event":"result","test":"Emotional arc review","section":"whole","status":"strong"}
@@ -49,6 +50,9 @@ STATUS_TO_RESULT = {"strong": "green", "observation": "blue", "concern": "amber"
 # check being (name, scope, what it does). Scope: section = findings pinned to sections;
 # whole = looks across the song. The descriptions are the first-column tooltips, one short
 # sentence each. tests/test_status_board.py keeps the names and scopes in step with SKILL.md.
+# Assessments that have no place in the table; listed under it.
+NOT_COVERED = ["Super-Thesaurus", "Audience Check", "Song Idea Development", "Song Idea Assessment"]
+
 ASSESSMENTS = [
     ("Core Assessment", "A first listen to the whole lyric.", [
         ("Emotional arc review", "whole", "Does the lyric build, resolve or land as intended?"),
@@ -68,9 +72,11 @@ ASSESSMENTS = [
         ("List serves a bigger statement", "section", "Does a list of images or events add up to a point?"),
         ("Stakes check", "whole", "Will a listener know why this song matters, and to whom?")]),
     ("Song Dynamics Assessment", "Maps the energy curve of the song.", [
+        ("Song dynamics graph", "whole", "The energy curve drawn across the song."),
         ("Dynamics review", "whole", "Is there contrast between sections and a well-placed climax?"),
         ("Section comparison", "whole", "Compares the energy of two sections and the gap between them.")]),
     ("Sound and Rhythm Assessment", "How the words perform in the melody.", [
+        ("Rhyme map", "whole", "Phonetic rhyme quality and scheme across the song."),
         ("Hook strength test", "section", "Does the hook earn its repetition?"),
         ("Line-level stress test", "section", "Does syllable stress line up with the melodic emphasis?"),
         ("Ambiguity test", "section", "Is any line unclear or open to unintended misreading?"),
@@ -142,7 +148,7 @@ def summarise(assessment, lyric_sections):
     return {
         "counts": counts,
         "ran": len(ran_checks),
-        "total": len(assessment["checks"]),
+        "total": len([c for c in assessment["checks"] if not c.get("unsupported")]),
         "stale": any(c.get("stale") for c in ran_checks),
     }
 
@@ -196,7 +202,10 @@ def text_board(data):
         for c in a["checks"]:
             is_run = ran(c)
             name = "– " + c["name"] + (" \\*" if is_run and c.get("stale") else "")
-            if c["scope"] == "whole":
+            if c.get("unsupported"):
+                whole_cell = NOT_RUN
+                row = [NA] * len(sections)
+            elif c["scope"] == "whole":
                 whole_cell = EMOJI[c.get("result") or "green"] if is_run else NOT_RUN
                 row = [NA] * len(sections)
             else:
@@ -207,6 +216,7 @@ def text_board(data):
             out.append(f"| {name} | {whole_cell} | " + " | ".join(row) + " |")
     if any(ran(c) and c.get("stale") for a in data["assessments"] for c in a["checks"]):
         out += ["", "\\* run before the latest edits"]
+    out += ["", "Assessments not covered by the table", ""] + [f"* {n}" for n in NOT_COVERED]
     return "\n".join(out) + "\n"
 
 
@@ -261,7 +271,7 @@ CSS = """
   td.notrun { background:#E7E4F3; }
   td.na, .chip.na { background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5' stroke='%23D2CEE2' stroke-width='1' fill='none'/></svg>") center/12px no-repeat; box-shadow:inset 0 0 0 1px #E6E3F1; }
   td.run { font-size:12px; color:var(--muted); padding-left:8px; white-space:nowrap; }
-  .chatlines { margin-top:28px; font-size:14px; color:var(--muted); }
+  .notcovered { margin-top:28px; font-size:14px; color:var(--muted); }
   .foot { font-size:12px; color:var(--muted); margin-top:8px; }
 """
 
@@ -303,7 +313,9 @@ def html_board(data, version=""):
         rows = []
         for c in a["checks"]:
             is_run = ran(c)
-            if c["scope"] == "whole":
+            if c.get("unsupported"):
+                whole = cell("notrun", f"Whole song · {c['name']}: Not yet supported")
+            elif c["scope"] == "whole":
                 whole = (result_cell({"result": c.get("result") or "green", "note": c.get("note")}, c["name"], "Whole song")
                          if is_run else result_cell(None, c["name"], "Whole song"))
             else:
@@ -322,7 +334,7 @@ def html_board(data, version=""):
         blocks.append(f'<details{" open" if open_ else ""}><summary><table>{head}{summary_row}</table></summary>\n'
                       f'<table class="checks">{"".join(rows)}</table></details>')
 
-    chat = "".join(f"<li>{esc(chat_line(a, lyric_sections))}</li>" for a in data["assessments"])
+    not_covered = "".join(f"<li>{esc(n)}</li>" for n in NOT_COVERED)
     stale = any(ran(c) and c.get("stale") for a in data["assessments"] for c in a["checks"])
     title = esc(data.get("title") or "Untitled")
     key = "".join(f'<span><i class="chip" style="background:var(--{r})"></i>{LABEL[r]}</span>' for r in ORDER)
@@ -336,7 +348,7 @@ def html_board(data, version=""):
 {chr(10).join(blocks)}
 {'<div class="foot">* run before the latest edits</div>' if stale else ""}
 <div id="tip"></div>
-<div class="chatlines"><ul>{chat}</ul></div>
+<div class="notcovered"><div>Assessments not covered by the table</div><ul>{not_covered}</ul></div>
 <script>
 // An open tab looks for a newer board (a small .version.js file next to the page) and reloads
 // only when it has changed. Which panels are open is remembered across reloads.
@@ -401,6 +413,7 @@ def read_log(lines):
     title = None
     sections = []            # [{"name","abbrev","instrumental"}]
     tests = {}               # check name -> {"cells":{},"whole":None,"covered":set,"stale":bool}
+    unsupported = set()      # checks this platform cannot run (shown as "Not yet supported")
 
     def find(name, number):
         for s in sections:
@@ -458,6 +471,11 @@ def read_log(lines):
             for t_ in tests.values():
                 t_["cells"].pop(s["name"], None)
                 t_["covered"].discard(s["name"])
+        elif event == "unsupported":
+            test = line.get("test")
+            if test not in CHECKS:
+                raise LogError(f"line {number}: unknown check '{test}'")
+            unsupported.add(test)
         elif event == "run":
             test = line.get("test")
             if test not in CHECKS:
@@ -509,7 +527,10 @@ def read_log(lines):
         for name, scope, _ in checks:
             row = {"name": name, "scope": scope}
             t_ = tests.get(name)
-            if not t_:
+            if name in unsupported:
+                row["run"] = False
+                row["unsupported"] = True
+            elif not t_:
                 row["run"] = False
             elif scope == "whole":
                 cell = t_["whole"] or {"result": "green"}

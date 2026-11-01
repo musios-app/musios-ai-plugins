@@ -1,5 +1,5 @@
 Lyrics & Chords skill
-Version 0.1.5
+Version 0.1.6
 Licence: GPL-2.0-only (see LICENSE).
 
 This skill bundles:

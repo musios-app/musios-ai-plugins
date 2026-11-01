@@ -1396,6 +1396,7 @@ interface StatusCheck {
   note?: string;
   cells?: Record<string, StatusCell>;
   uncovered?: string[];
+  unsupported?: boolean;
 }
 interface StatusAssessment { name: string; checks: StatusCheck[] }
 interface StatusData {
@@ -1419,6 +1420,9 @@ const PLACEHOLDER_SECTIONS: [string, string][] = [["Verse", "V"], ["Chorus", "C"
 
 // The assessments the board shows, in Tool List order: [name, what it is, checks], each check being
 // [name, scope, what it does]. The same list as in status_board.py.
+// Assessments that have no place in the table; listed under it.
+const NOT_COVERED = ["Super-Thesaurus", "Audience Check", "Song Idea Development", "Song Idea Assessment"];
+
 const ASSESSMENTS: [string, string, [string, "section" | "whole", string][]][] = [
   [
     "Core Assessment",
@@ -1512,6 +1516,11 @@ const ASSESSMENTS: [string, string, [string, "section" | "whole", string][]][] =
     "Maps the energy curve of the song.",
     [
       [
+        "Song dynamics graph",
+        "whole",
+        "The energy curve drawn across the song."
+      ],
+      [
         "Dynamics review",
         "whole",
         "Is there contrast between sections and a well-placed climax?"
@@ -1527,6 +1536,11 @@ const ASSESSMENTS: [string, string, [string, "section" | "whole", string][]][] =
     "Sound and Rhythm Assessment",
     "How the words perform in the melody.",
     [
+      [
+        "Rhyme map",
+        "whole",
+        "Phonetic rhyme quality and scheme across the song."
+      ],
       [
         "Hook strength test",
         "section",
@@ -1690,7 +1704,7 @@ function summariseAssessment(a: StatusAssessment, lyricSections: string[]) {
     if (c.scope === "whole") { if (c.result) counts[c.result]++; }
     else for (const s of lyricSections) if (covered(c, s)) counts[sectionResult(c, s).result]++;
   }
-  return { counts, ran: ran.length, total: a.checks.length, stale: ran.some(c => c.stale) };
+  return { counts, ran: ran.length, total: a.checks.filter(c => !c.unsupported).length, stale: ran.some(c => c.stale) };
 }
 
 function chatLine(a: StatusAssessment, lyricSections: string[]): string {
@@ -1733,7 +1747,10 @@ function textBoard(data: StatusData): string {
       const isRun = checkRan(c);
       const name = "– " + c.name + (isRun && c.stale ? " \\*" : "");
       let wholeCell: string, row: string[];
-      if (c.scope === "whole") {
+      if (c.unsupported) {
+        wholeCell = NOT_RUN;
+        row = sections.map(() => NA);
+      } else if (c.scope === "whole") {
         wholeCell = isRun ? STATUS_EMOJI[c.result ?? "green"] : NOT_RUN;
         row = sections.map(() => NA);
       } else {
@@ -1744,6 +1761,7 @@ function textBoard(data: StatusData): string {
     }
   }
   if (data.assessments.some(a => a.checks.some(c => checkRan(c) && c.stale))) out.push("", "\\* run before the latest edits");
+  out.push("", "Assessments not covered by the table", "", ...NOT_COVERED.map(n => `* ${n}`));
   return out.join("\n") + "\n";
 }
 
@@ -1796,7 +1814,7 @@ const STATUS_CSS = `
   td.notrun { background:#E7E4F3; }
   td.na, .chip.na { background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5' stroke='%23D2CEE2' stroke-width='1' fill='none'/></svg>") center/12px no-repeat; box-shadow:inset 0 0 0 1px #E6E3F1; }
   td.run { font-size:12px; color:var(--muted); padding-left:8px; white-space:nowrap; }
-  .chatlines { margin-top:28px; font-size:14px; color:var(--muted); }
+  .notcovered { margin-top:28px; font-size:14px; color:var(--muted); }
   .foot { font-size:12px; color:var(--muted); margin-top:8px; }
 `;
 
@@ -1828,7 +1846,8 @@ function generateStatusBoard(data: StatusData, version = ""): string {
 
     const rows = a.checks.map(c => {
       const isRun = checkRan(c);
-      const whole = c.scope === "whole"
+      const whole = c.unsupported ? statusCell("notrun", `Whole song · ${c.name}: Not yet supported`)
+        : c.scope === "whole"
         ? (isRun ? resultCell({ result: c.result ?? "green", note: c.note }, c.name, "Whole song") : resultCell(null, c.name, "Whole song"))
         : statusCell("na");
       const cells = sections.map(s => {
@@ -1843,7 +1862,7 @@ function generateStatusBoard(data: StatusData, version = ""): string {
     return `<details${open ? " open" : ""}><summary><table>${head}${summaryRow}</table></summary>\n<table class="checks">${rows}</table></details>`;
   }).join("\n");
 
-  const chat = data.assessments.map(a => `<li>${escapeHtml(chatLine(a, lyricSections))}</li>`).join("");
+  const notCovered = NOT_COVERED.map(n => `<li>${escapeHtml(n)}</li>`).join("");
   const stale = data.assessments.some(a => a.checks.some(c => checkRan(c) && c.stale));
   const title = escapeHtml(data.title || "Untitled");
   const key = STATUS_ORDER.map(r => `<span><i class="chip" style="background:var(--${r})"></i>${STATUS_LABEL[r]}</span>`).join("");
@@ -1858,7 +1877,7 @@ function generateStatusBoard(data: StatusData, version = ""): string {
 ${blocks}
 ${stale ? '<div class="foot">* run before the latest edits</div>' : ""}
 <div id="tip"></div>
-<div class="chatlines"><ul>${chat}</ul></div>
+<div class="notcovered"><div>Assessments not covered by the table</div><ul>${notCovered}</ul></div>
 <script>
 // An open tab looks for a newer board (a small .version.js file next to the page) and reloads
 // only when it has changed. Which panels are open is remembered across reloads.
@@ -1916,6 +1935,7 @@ function readStatusLog(lines: string[]): StatusData {
   let title: string | null = null;
   let sections: LogSection[] = [];
   const tests = new Map<string, LogTest>();
+  const unsupported = new Set<string>();   // checks this platform cannot run (shown as "Not yet supported")
 
   const find = (name: unknown, number: number): LogSection => {
     const s = sections.find(x => x.name === name);
@@ -1971,6 +1991,10 @@ function readStatusLog(lines: string[]): StatusData {
         for (const t of tests.values()) { t.cells.delete(s.name); t.covered.delete(s.name); }
         break;
       }
+      case "unsupported":
+        if (!CHECKS.has(line.test)) throw new LogError(`line ${number}: unknown check '${line.test}'`);
+        unsupported.add(line.test);
+        break;
       case "run":
         if (!CHECKS.has(line.test)) throw new LogError(`line ${number}: unknown check '${line.test}'`);
         tests.set(line.test, freshTest());
@@ -2018,7 +2042,8 @@ function readStatusLog(lines: string[]): StatusData {
     checks: checks.map(([name, scope]) => {
       const row: StatusCheck = { name, scope };
       const t = tests.get(name);
-      if (!t) row.run = false;
+      if (unsupported.has(name)) { row.run = false; row.unsupported = true; }
+      else if (!t) row.run = false;
       else if (scope === "whole") {
         const cell = t.whole ?? { result: "green" as StatusResult };
         row.result = cell.result;

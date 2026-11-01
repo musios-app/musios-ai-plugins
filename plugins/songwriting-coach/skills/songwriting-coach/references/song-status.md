@@ -1,6 +1,6 @@
 # Song status
 
-When the writer asks for the song's status, give a quick summary in the chat and a status board, built from the checks run so far in this conversation. Show it only when asked — never in the greeting, and don't replace any report with it.
+When the writer asks for the song's status, give a status board, built from the checks run so far in this conversation. Show it only when asked — never in the greeting, and don't replace any report with it.
 
 Views — the writer can name any of them; all three use the same page, opened differently:
 - **Status** (default — "show song status", "where are we", "traffic lights"): assessments with at least one check run are expanded to show their checks; the rest are collapsed.
@@ -14,10 +14,11 @@ How to build it — the first time status is asked, add lines for everything run
    - `{"event":"section-order","names":["Verse 1","Chorus",…]}` once the sections are declared, and again if they are moved.
    - `{"event":"section-rename","name":"Verse 1","new_name":"Verse One","abbrev":"V1"}` (keeps results; `abbrev` only if it changes), `{"event":"section-replace","name":"Verse 2"}` (new text: its results are cleared), `{"event":"section-delete","name":"Verse 1"}`.
    - After each check you run: `{"event":"run","test":"Cliche scan"}`, then one `result` line per finding: `{"event":"result","test":"Cliche scan","section":"Verse 1","status":"concern","note":"one short line"}`. A section with no result line counts as clean. For a whole-song check use `"section":"whole"`.
+   - The Rhyme map and the Song dynamics graph are whole-song checks that are done or not, so when one has run log it as `{"event":"result","test":"Rhyme map","section":"whole","status":"observation","note":"one short line on the scheme"}` (shown blue; the same for the Song dynamics graph, with a note on the curve), never as a clean result.
+   - This platform has no Song dynamics graph, so the first time the board is made add `{"event":"unsupported","test":"Song dynamics graph"}`; the board then shows that row as "Not yet supported" and leaves it out of the counts.
    - Status: `strong` (clean or positive), `observation`, `concern`, `issue`. Check names are those in the Tool List.
    - When the writer changes a section: `{"event":"edit","section":"Verse 1"}`. It marks that section's results, and every whole-song result, as run before the latest edits.
 2. Open the board for the writer: after the script has written it, open `html_file` in the app's browser with `mcp__codex_app__open_in_codex`, `target.type` `"browser"` and `target.url` the absolute file URL (`file:///…`). A request for status authorizes this; don't ask first. Open it before sending the status summary, the first time status is shown in the conversation; later runs only update the file, and the open tab refreshes itself (it checks every second and reloads only when the board has changed), so say only that the board has been updated. A link alone doesn't complete this step. If the board can't be opened (the tool is unavailable or fails), give a bold, clickable link to `html_file` on its own line and say briefly that it couldn't be opened automatically. Do not also show the board in the chat unless the writer asks, or the page could not be made; then show the `markdown` board from the output exactly as it comes (one table: a header row, a row per assessment with the worst result in each column, and that assessment's check rows under it).
-3. Show the `chat_lines`, one per assessment, positives first — e.g. **Core Assessment** 🟢 8 · 🔵 1 · 🟡 4 · 🔴 1 — 4 of 6 run.
-4. End with one line naming the reddest area and offering the obvious next check — an offer, not a queue.
+3. Don't list the assessments in the chat: the board is the summary. End with one line naming the reddest area and offering the obvious next check — an offer, not a queue.
 
-If the script can't run, give the chat lines only, counting the results yourself.
+If the script can't run, give one line per assessment with its counts (🟢 🔵 🟡 🔴 and how many checks have run), counting the results yourself.

@@ -1,6 +1,6 @@
 {
   "name": "lyrics-and-chords",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Loads song lyric and chord files and checks that no word or chord was lost.",
   "author": {
     "name": "Andrew Hunt (musios)",
