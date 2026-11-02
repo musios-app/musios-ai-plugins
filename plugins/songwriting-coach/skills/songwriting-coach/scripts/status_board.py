@@ -54,11 +54,12 @@ STATUS_TO_RESULT = {"strong": "green", "observation": "blue", "concern": "amber"
 NOT_COVERED = ["Super-Thesaurus", "Audience Check", "Song Idea Development", "Song Idea Assessment"]
 
 ASSESSMENTS = [
+    # generated from checks.toml
     ("Core Assessment", "A first listen to the whole lyric.", [
         ("Emotional arc review", "whole", "Does the lyric build, resolve or land as intended?"),
         ("Sliver of hope check", "whole", "Is there a moment of lift, or one unrelenting emotion?"),
         ("Authenticity review", "section", "Does it sound like a real person in a real moment?"),
-        ("Cliche scan", "section", "Flags overused words, images and phrases."),
+        ("Cliche scan", "section", "Stock phrases and images listeners have heard many times."),
         ("Beat review", "section", "Checks vowels, stress and syllable count against the melody."),
         ("Singability review", "section", "Does the phrasing feel natural to perform?")]),
     ("Narrative Assessment", "Does the song actually move?", [
@@ -102,6 +103,7 @@ ASSESSMENTS = [
         ("Closing line review", "section", "Does the last line land with the right weight?"),
         ("Title placement review", "whole", "Does the title appear in a position of weight?"),
         ("Title strength/quality test", "whole", "Is the title fresh and hooky, or the obvious treatment?")]),
+    # end generated
 ]
 
 PLACEHOLDER_SECTIONS = [("Verse", "V"), ("Chorus", "C")]  # shown until the lyric's sections are declared

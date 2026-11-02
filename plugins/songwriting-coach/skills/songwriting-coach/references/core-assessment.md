@@ -7,7 +7,7 @@
 - **Emotional arc review** — does the lyric build, resolve, or land as intended across the song?
 - **Sliver of hope check** — checks whether a sad or heavy lyric includes at least one moment of hope, relief, or forward motion (often placed in the bridge) rather than remaining unrelieved despair from start to finish. This is a pattern worth flagging, not a rule — some songs are legitimately, deliberately hopeless throughout, and that can be the intended effect. If the lyric holds one negative emotion with no turn or lift anywhere, ask the writer whether that's the intended effect before treating it as a gap to fix.
 - **Authenticity review** — does the lyric sound like a real person in a real moment, or does it feel constructed?
-- **Cliche scan** — flag overused words, images, or phrases
+- **Cliche scan** — flag phrases, images and words listeners have heard many times before
 - **Beat review** — assess vowel quality, stress placement, and syllable count against an implied beat or melody. If a genre is known (from Song mode & direction, or stated directly), calibrate against that genre's rhythmic norms rather than a generic standard — reggae's rhythmic placement, for instance, tolerates and even expects patterns a straight pop ballad wouldn't.
 - **Singability review** — does the phrasing feel natural to perform, or does it fight a singer's breath and phrasing instincts? Read the lyric aloud, not just silently, as part of this check: reading aloud surfaces problems that don't show up on the page — lines that sound overly poetic or "written" rather than spoken, words that are physically hard to say in sequence, or a shift in register/voice that wasn't audible when just reading the text.
 

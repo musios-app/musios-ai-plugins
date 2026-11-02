@@ -1424,6 +1424,7 @@ const PLACEHOLDER_SECTIONS: [string, string][] = [["Verse", "V"], ["Chorus", "C"
 const NOT_COVERED = ["Super-Thesaurus", "Audience Check", "Song Idea Development", "Song Idea Assessment"];
 
 const ASSESSMENTS: [string, string, [string, "section" | "whole", string][]][] = [
+  // generated from checks.toml
   [
     "Core Assessment",
     "A first listen to the whole lyric.",
@@ -1446,7 +1447,7 @@ const ASSESSMENTS: [string, string, [string, "section" | "whole", string][]][] =
       [
         "Cliche scan",
         "section",
-        "Flags overused words, images and phrases."
+        "Stock phrases and images listeners have heard many times."
       ],
       [
         "Beat review",
@@ -1670,7 +1671,8 @@ const ASSESSMENTS: [string, string, [string, "section" | "whole", string][]][] =
         "Is the title fresh and hooky, or the obvious treatment?"
       ]
     ]
-  ]
+  ],
+  // end generated
 ];;
 
 const CHECKS = new Map<string, string>();
